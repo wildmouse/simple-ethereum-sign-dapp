@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import "./App.css";
-import { useEtherBalance, useEthers } from "@usedapp/core";
-import { formatEther } from "ethers/lib/utils";
+import { useEthers } from "@usedapp/core";
 
 function App() {
   const [message, setMessage] = useState<string>("");
   const [signature, setSignature] = useState<string>("");
   const { activateBrowserWallet, account, library } = useEthers();
-  const etherBalance = useEtherBalance(account);
 
   return (
     <div>
@@ -16,7 +14,14 @@ function App() {
         <button onClick={() => activateBrowserWallet()}>Connect</button>
       </div>
       {account && <p>Account: {account}</p>}
-      <textarea onChange={(e) => setMessage(e.target.value)} value={message} />
+      <div>
+        <textarea
+          rows={10}
+          cols={50}
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+        />
+      </div>
       {library && (
         <button
           onClick={() => {
