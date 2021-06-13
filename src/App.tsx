@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import { useEtherBalance, useEthers } from "@usedapp/core";
+import { formatEther } from "ethers/lib/utils";
 
 function App() {
+  const [message, setMessage] = useState<string>("");
+  const [signature, setSignature] = useState<string>("");
+  const { activateBrowserWallet, account, library } = useEthers();
+  const etherBalance = useEtherBalance(account);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <h2>Ethereum signature playground</h2>
+      <div>
+        <button onClick={() => activateBrowserWallet()}>Connect</button>
+      </div>
+      {account && <p>Account: {account}</p>}
+      <textarea onChange={(e) => setMessage(e.target.value)} value={message} />
+      {library && (
+        <button
+          onClick={() => {
+            library
+              ?.getSigner()
+              .signMessage(message)
+              .then((signature) => setSignature(signature));
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          Sign message
+        </button>
+      )}
+      {signature && <p>Signature: {signature}</p>}
     </div>
   );
 }
